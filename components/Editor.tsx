@@ -72,7 +72,7 @@ const Editor: React.FC<EditorProps> = ({
                     <div className="flex items-center space-x-4">
                         <label className="relative cursor-pointer group">
                             {storeData.logo.startsWith('data:') || storeData.logo.startsWith('http') ? (
-                                <img src={storeData.logo} alt="Store Logo" className="h-20 w-auto object-contain rounded-md" />
+                                <img src={storeData.logo} alt="Store Logo" className="h-20 w-20 object-contain rounded-md" />
                             ) : (
                                 <div className="h-20 w-20 flex items-center justify-center text-6xl bg-gray-800/50 border-2 border-dashed border-amber-500/50 rounded-md">
                                     {storeData.logo}
@@ -120,7 +120,7 @@ const Editor: React.FC<EditorProps> = ({
                                     </div>
                                 </div>
                                 <div className="w-full aspect-square bg-black rounded flex items-center justify-center">
-                                    <img src={storeData.featuredModel.image} alt="Featured" className="w-full h-full object-cover rounded" />
+                                    <img src={storeData.featuredModel.image} alt="Featured" className="w-full h-full object-contain rounded p-4" />
                                 </div>
                                 <div className="p-4 bg-gradient-to-br from-purple-500/10 to-purple-600/10 border border-purple-500/30 rounded-lg">
                                     <div className="flex justify-between items-center mb-3">
