@@ -1,0 +1,5 @@
+{
+  "name": "LaCereza-Powered Adult Store",
+  "description": "An elegant and modern e-commerce storefront for an adult store, featuring in-place editing capabilities and AI-powered content generation for product names and descriptions using the Gemini API.",
+  "requestFramePermissions": []
+}
