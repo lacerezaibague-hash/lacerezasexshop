@@ -1,8 +1,3 @@
-
-
-
-
-
 import React, { useState, useEffect } from 'react';
 import type { Product, StoreData, NotificationType } from '../types';
 import { ShoppingCart, Edit2, X, Trash2, Search, ChevronLeft, ChevronRight, MessageCircle } from './Icons';
@@ -83,7 +78,7 @@ const Storefront: React.FC<StorefrontProps> = ({ storeData, showNotification }) 
         <div className="container mx-auto px-4 py-6 flex justify-between items-center">
           <div className="flex items-center space-x-4">
             {storeData.logo.startsWith('data:') || storeData.logo.startsWith('http') ? (
-              <img src={storeData.logo} alt="Store Logo" className="h-20 w-auto object-contain" />
+              <img src={storeData.logo} alt="Store Logo" className="h-20 w-20 object-contain" />
             ) : (
               <span className="text-6xl">{storeData.logo}</span>
             )}
@@ -102,11 +97,11 @@ const Storefront: React.FC<StorefrontProps> = ({ storeData, showNotification }) 
         <section className="container mx-auto px-4 py-8">
           <div className="bg-gradient-to-br from-gray-800/50 to-black/50 backdrop-blur-lg rounded-xl shadow-2xl overflow-hidden border border-amber-500/20 hover:border-amber-500/50 transition-all duration-500">
             <div className="md:flex">
-              <div className="md:w-1/2 relative bg-black md:aspect-square">
+              <div className="md:w-1/2 relative bg-black aspect-square">
                 <img
                   src={storeData.featuredModel.gallery?.[featuredModelGalleryIndex] || storeData.featuredModel.image}
                   alt={storeData.featuredModel.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain p-4"
                 />
                 {storeData.featuredModel.gallery && storeData.featuredModel.gallery.length > 1 && (
                   <>
