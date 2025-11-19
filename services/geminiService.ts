@@ -5,9 +5,6 @@ import { GoogleGenAI, Modality } from "@google/genai";
 const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export const generateProductDescription = async (productName: string): Promise<string> => {
-  if (!process.env.API_KEY) {
-    return "API key is not configured. Please set up your API_KEY environment variable.";
-  }
   try {
     const prompt = `Generate a seductive and appealing product description for an adult toy named "${productName}". The description should be short, enticing, and focus on pleasure and excitement. Keep it under 30 words. Do not use explicit or vulgar language.`;
 
@@ -24,9 +21,6 @@ export const generateProductDescription = async (productName: string): Promise<s
 };
 
 export const suggestProductTitle = async (description: string): Promise<string> => {
-  if (!process.env.API_KEY) {
-    return "API key is not configured.";
-  }
   try {
     const prompt = `Based on the following adult toy description, suggest a short, catchy, and evocative product name (2-4 words max): "${description}"`;
     
@@ -43,9 +37,6 @@ export const suggestProductTitle = async (description: string): Promise<string> 
 };
 
 export const generateProductImage = async (productName: string, productDescription: string): Promise<string> => {
-  if (!process.env.API_KEY) {
-    return "API key is not configured.";
-  }
   try {
     const prompt = `Generate a professional, high-quality, visually appealing e-commerce product image for an adult toy.
     Product Name: "${productName}"
