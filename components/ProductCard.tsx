@@ -1,8 +1,7 @@
 import React from 'react';
 import type { Product } from '../types';
-import { Trash2, Plus, X, ZoomIn, MessageCircle, Loader2, Upload } from './Icons';
+import { Trash2, Plus, X, ZoomIn, MessageCircle, Upload } from './Icons';
 import { fileToBase64 } from '../utils/fileUtils';
-
 
 interface ProductCardProps {
   product: Product;
@@ -38,9 +37,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
   };
 
   const handleGalleryUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    // FIX: Use a ternary operator to help TypeScript correctly infer the type of `files` as `File[]`.
-    // The original `|| []` could cause `Array.from` to return `unknown[]`.
-    // FIX: Explicitly type `files` as `File[]` to prevent TypeScript from inferring it as `unknown[]` in stricter configurations.
     const files: File[] = e.target.files ? Array.from(e.target.files) : [];
     if (files.length === 0) return;
 
