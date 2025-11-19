@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import type { Product, StoreData, NotificationType } from '../types';
-import { Save, X, Plus, Trash2, Loader2, Search, Upload, Download } from './Icons';
+import type { StoreData, NotificationType } from '../types';
+import { Save, X, Plus, Trash2, Loader2, Search, Upload } from './Icons';
+import { Download } from 'lucide-react';
 import ProductCard from './ProductCard';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 
@@ -57,7 +58,7 @@ const Editor: React.FC<EditorProps> = ({
         if (!isSupabaseConfigured) {
             showNotification("Database Not Configured: Changes will not be saved to the cloud.", "warning");
         }
-    }, []);
+    }, [showNotification]);
 
     const handleAddCategory = () => {
         const newCategoryKey = addCategory();
