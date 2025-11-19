@@ -4,8 +4,15 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = process.env.SUPABASE_URL || ""; 
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 
-if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-    console.warn("⚠️ Supabase credentials missing. Please set SUPABASE_URL and SUPABASE_ANON_KEY in your Netlify Environment Variables.");
+// Flag to check if configuration is present
+export const isSupabaseConfigured = !!(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL.startsWith('http'));
+
+if (!isSupabaseConfigured) {
+    console.warn("⚠️ Supabase credentials missing or invalid. Please set SUPABASE_URL and SUPABASE_ANON_KEY in your Netlify Environment Variables.");
 }
 
-export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Create client only if keys are present, otherwise create a dummy client that warns on use
+// This prevents the app from crashing entirely on load if keys are missing.
+export const supabase = isSupabaseConfigured 
+    ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+    : createClient("https://placeholder.supabase.co", "placeholder");
