@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import type { Product, StoreData, NotificationType } from '../types';
-import { Save, X, Plus, Trash2, Loader2, Search, Upload } from './Icons';
+import { Save, X, Plus, Trash2, Loader2, Search, Upload, Download } from './Icons';
 import ProductCard from './ProductCard';
+import { isSupabaseConfigured } from '../services/supabaseClient';
 
 interface EditorProps {
     storeData: StoreData;
@@ -19,6 +20,8 @@ interface EditorProps {
     handleSaveAndExit: () => Promise<void>;
     saving: boolean;
     showNotification: (message: string, type?: NotificationType['type']) => void;
+    handleExportData: () => void;
+    handleImportData: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({
@@ -37,6 +40,8 @@ const Editor: React.FC<EditorProps> = ({
     handleSaveAndExit,
     saving,
     showNotification,
+    handleExportData,
+    handleImportData,
 }) => {
     const [selectedCategory, setSelectedCategory] = useState(Object.keys(storeData.categories)[0] || '');
     const [searchTerm, setSearchTerm] = useState('');
@@ -47,6 +52,12 @@ const Editor: React.FC<EditorProps> = ({
             setSelectedCategory(Object.keys(storeData.categories)[0]);
         }
     }, [storeData.categories, selectedCategory]);
+
+    useEffect(() => {
+        if (!isSupabaseConfigured) {
+            showNotification("Database Not Configured: Changes will not be saved to the cloud.", "warning");
+        }
+    }, []);
 
     const handleAddCategory = () => {
         const newCategoryKey = addCategory();
@@ -70,6 +81,12 @@ const Editor: React.FC<EditorProps> = ({
             <header className="bg-black/80 backdrop-blur-md text-white shadow-2xl border-b border-amber-500/20 sticky top-0 z-30">
                 <div className="container mx-auto px-4 py-6 flex justify-between items-center">
                     <div className="flex items-center space-x-4">
+                        {/* Connection Status Indicator */}
+                        <div 
+                            className={`w-3 h-3 rounded-full ${isSupabaseConfigured ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.8)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.8)]'}`} 
+                            title={isSupabaseConfigured ? "Connected to Supabase" : "Disconnected: Check Netlify Environment Variables"}
+                        />
+
                         <label className="relative cursor-pointer group">
                             {storeData.logo.startsWith('data:') || storeData.logo.startsWith('http') ? (
                                 <img src={storeData.logo} alt="Store Logo" className="h-20 w-20 object-contain rounded-md" />
@@ -91,8 +108,17 @@ const Editor: React.FC<EditorProps> = ({
                             className="text-4xl font-bold bg-white/10 rounded px-3 py-2 border-2 border-amber-500 text-amber-400"
                         />
                     </div>
-                    <div className="flex items-center space-x-4">
-                        <button onClick={handleSaveAndExit} disabled={saving} className="bg-gradient-to-r from-amber-500 to-amber-600 text-black px-4 py-2 rounded-lg font-semibold hover:scale-110 transition flex items-center space-x-2 disabled:opacity-50">
+                    <div className="flex items-center space-x-2">
+                         <label className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white px-4 py-2 rounded-lg font-semibold hover:scale-105 transition flex items-center space-x-2 cursor-pointer">
+                            <Upload size={20} />
+                            <span>Import</span>
+                            <input type="file" accept=".json" onChange={handleImportData} className="hidden" />
+                        </label>
+                        <button onClick={handleExportData} className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 rounded-lg font-semibold hover:scale-105 transition flex items-center space-x-2">
+                            <Download size={20} />
+                            <span>Export</span>
+                        </button>
+                        <button onClick={handleSaveAndExit} disabled={saving} className="bg-gradient-to-r from-amber-500 to-amber-600 text-black px-4 py-2 rounded-lg font-semibold hover:scale-105 transition flex items-center space-x-2 disabled:opacity-50">
                             {saving ? <><Loader2 size={20} className="animate-spin" /><span>Saving...</span></> : <><Save size={20} /><span>Save & Exit</span></>}
                         </button>
                     </div>
