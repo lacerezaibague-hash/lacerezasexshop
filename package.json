@@ -1,11 +1,11 @@
 {
-  "name": "gemini-powered-adult-store",
+  "name": "lacereza-powered-adult-store",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
