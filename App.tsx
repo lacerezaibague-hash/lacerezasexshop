@@ -1,7 +1,3 @@
-
-
-
-
 import React, { useState, useEffect, useCallback } from 'react';
 import type { Product, StoreData, NotificationType, Category } from './types';
 import Loader from './components/Loader';
@@ -9,7 +5,6 @@ import Notification from './components/Notification';
 import { fileToBase64 } from './utils/fileUtils';
 import Storefront from './components/Storefront';
 import Editor from './components/Editor';
-
 
 const defaultStoreData: StoreData = {
   name: "Pleasure Palace",
@@ -101,7 +96,6 @@ const App: React.FC = () => {
 
     const saveStoreData = async () => {
       setSaving(true);
-      // Use a timeout to give feedback to the user that something is happening
       await new Promise(resolve => setTimeout(resolve, 500));
       try {
         localStorage.setItem('store-data', JSON.stringify(storeData));
@@ -126,6 +120,47 @@ const App: React.FC = () => {
       const url = new URL(window.location.href);
       url.searchParams.delete('edit');
       window.location.href = url.toString();
+    };
+
+    // ✅ AGREGAR ESTAS DOS FUNCIONES
+    const handleExportData = () => {
+      try {
+        const dataStr = JSON.stringify(storeData, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `store-data-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        showNotification('Data exported successfully', 'success');
+      } catch (error) {
+        console.error('Error exporting data:', error);
+        showNotification('Error exporting data', 'error');
+      }
+    };
+
+    const handleImportData = async (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      try {
+        const text = await file.text();
+        const importedData = JSON.parse(text);
+        
+        // Validate that the imported data has the correct structure
+        if (importedData.categories && importedData.name) {
+          setStoreData(importedData);
+          showNotification('Data imported successfully', 'success');
+        } else {
+          showNotification('Invalid data format', 'error');
+        }
+      } catch (error) {
+        console.error('Error importing data:', error);
+        showNotification('Error importing data. Please check the file format.', 'error');
+      }
     };
     
     const updateProduct = (categoryKey: string, productId: number, field: string, value: any) => {
@@ -307,11 +342,11 @@ const App: React.FC = () => {
                     border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #f59e0b; /* amber-500 */
+                    background: #f59e0b;
                     border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #d97706; /* amber-600 */
+                    background: #d97706;
                 }
             `}</style>
             <Notification notification={notification} />
@@ -337,6 +372,8 @@ const App: React.FC = () => {
                     handleSaveAndExit={handleSaveAndExit}
                     saving={saving}
                     showNotification={showNotification}
+                    handleExportData={handleExportData}
+                    handleImportData={handleImportData}
                 />
             ) : (
                 <Storefront
