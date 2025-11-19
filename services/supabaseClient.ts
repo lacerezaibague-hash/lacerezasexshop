@@ -1,8 +1,8 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Access credentials from environment variables injected by Vite
-const SUPABASE_URL = process.env.SUPABASE_URL || ""; 
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
 
 // Flag to check if configuration is present
 export const isSupabaseConfigured = !!(SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL.startsWith('http'));
