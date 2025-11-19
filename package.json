@@ -1,5 +1,5 @@
 {
-  "name": "gemini-powered-adult-store",
+  "name": "lacereza-powered-adult-store",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -9,6 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.39.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },
