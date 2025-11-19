@@ -19,12 +19,12 @@ import { getFirestore, Firestore } from "firebase/firestore";
 //    Asegúrate de que no queden placeholders como 'YOUR_AUTH_DOMAIN', 'YOUR_PROJECT_ID', etc.
 // ====================================================================================
 const firebaseConfig = {
-  apiKey: "AIzaSyBl7Nr9mzfHn_TiMB6O6K_vULTu4DZhkBY", // Esta es la API Key proporcionada. Asegúrate de que sea correcta.
-  authDomain: "lacerezaibague-8f1fa.firebaseapp.com",
-  projectId: "lacerezaibague-8f1fa", // !!! CRÍTICO para Firestore. ¡NO LO OLVIDES! !!!
-  storageBucket: "lacerezaibague-8f1fa.firebasestorage.app",
-  messagingSenderId: "578034195828",
-  appId: "1:578034195828:web:8c0de285e0cbf581686021"
+  apiKey: "AIzaSyD8zLRAnwZ4M6OAg-G2LOwJqLUQYOWD1qI", // Esta es la API Key proporcionada. Asegúrate de que sea correcta.
+  authDomain: "la-cereza-ibague.firebaseapp.com",
+  projectId: "la-cereza-ibague", // !!! CRÍTICO para Firestore. ¡NO LO OLVIDES! !!!
+  storageBucket: "la-cereza-ibague.firebasestorage.app",
+  messagingSenderId: "1089974027435",
+  appId: "1:1089974027435:web:5127ae5ca6763614c8a3ee"
 };
 
 // Initialize Firebase App
