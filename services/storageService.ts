@@ -1,35 +1,45 @@
 import type { StoreData } from '../types';
-import { supabase } from './supabaseClient';
+import { supabase, isSupabaseConfigured } from './supabaseClient';
 
-// --- Supabase Implementation ---
-
-// Nombre de la tabla en Supabase. 
-// ¡ASEGÚRATE DE HABER CREADO ESTA TABLA EN EL SQL EDITOR DE SUPABASE!
-// Código SQL para crearla:
-// create table store_main ( id bigint primary key default 1, content jsonb );
-// alter table store_main disable row level security;
-// insert into store_main (id, content) values (1, '{}');
 const TABLE_NAME = 'store_main';
-const ROW_ID = 1; // Usaremos siempre la fila con ID 1 para guardar todo el objeto de la tienda.
+const ROW_ID = 1; 
 
 export const saveData = async (data: StoreData): Promise<void> => {
+  // 1. Check Configuration
+  if (!isSupabaseConfigured) {
+    throw new Error("DATABASE_NOT_CONFIGURED: Supabase variables are missing in Netlify.");
+  }
+
   try {
-    // Upsert: Actualiza si existe, inserta si no.
+    // 2. Attempt Save
     const { error } = await supabase
       .from(TABLE_NAME)
       .upsert({ id: ROW_ID, content: data });
 
     if (error) {
-      console.error("Supabase Error:", error);
+      console.error("Supabase Save Error:", error);
+      // Check for common RLS error
+      if (error.code === '42501' || error.message.includes('row-level security')) {
+         throw new Error("PERMISSION_DENIED: Run 'alter table store_main disable row level security;' in Supabase SQL Editor.");
+      }
       throw new Error(error.message);
     }
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error saving data to Supabase:", error);
-    throw new Error("Failed to save data to cloud.");
+    // Rethrow with clear message for the UI
+    if (error.message.startsWith("DATABASE_NOT_CONFIGURED")) throw error;
+    if (error.message.startsWith("PERMISSION_DENIED")) throw error;
+    
+    throw new Error(`Failed to save: ${error.message || "Unknown network error"}`);
   }
 };
 
 export const loadData = async (defaultData: StoreData): Promise<StoreData> => {
+  if (!isSupabaseConfigured) {
+    console.warn("Supabase not configured, loading default local data.");
+    return defaultData;
+  }
+
   try {
     const { data, error } = await supabase
       .from(TABLE_NAME)
@@ -38,20 +48,21 @@ export const loadData = async (defaultData: StoreData): Promise<StoreData> => {
       .single();
 
     if (error) {
-        // Si el error es que no encontró filas, guardamos la data por defecto
+        // If table doesn't exist or row is missing
         if (error.code === 'PGRST116') { 
-            console.log("No data found in Supabase, initializing...");
+            console.log("No data found in Supabase, initializing with default...");
+            // Attempt to create the row
             await saveData(defaultData);
             return defaultData;
         }
-        console.error("Supabase Load Error:", error);
+        console.error("Supabase Load Error Details:", error);
         throw error;
     }
 
     if (data && data.content && Object.keys(data.content).length > 0) {
       const supabaseData = data.content as StoreData;
       
-      // Deep merge with default data to prevent crashes from outdated structures
+      // Deep merge to ensure robustness
       const validatedData: StoreData = {
           ...defaultData,
           ...supabaseData,
@@ -73,7 +84,7 @@ export const loadData = async (defaultData: StoreData): Promise<StoreData> => {
 
   } catch (error) {
     console.error("Error loading data from Supabase:", error);
-    // Fallback to default data if connection fails
-    throw new Error("Could not connect to the database. Displaying default data.");
+    // We don't throw here to allow the app to open even if DB fails
+    return defaultData;
   }
 };
