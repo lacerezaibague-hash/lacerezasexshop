@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import type { Product, StoreData, NotificationType } from '../types';
-import { ShoppingCart, Edit2, X, Trash2, Search, ChevronLeft, ChevronRight, MessageCircle } from './Icons';
+import { ShoppingCart, X, Trash2, Search, ChevronLeft, ChevronRight, MessageCircle } from './Icons';
 import ProductCard from './ProductCard';
 
 interface StorefrontProps {
